@@ -1,9 +1,19 @@
 package com.valera.dictagent
 
+import android.content.Context
+
 object Config {
-    const val BOT_TOKEN = "8453941229:AAGt6GG4WEWBD5vrPohQeA3_E9fKLag9hno"
-    const val CHAT_ID = "7383102525"
-    const val MAX_RECORDING_SECONDS = 3600
-    const val FILE_STABILIZE_WAIT_MS = 2000L
-    const val BUTTON_DEBOUNCE_MS = 500L
+    private const val P = "da_prefs"
+    private var ctx: Context? = null
+    private val p get() = ctx!!.getSharedPreferences(P, Context.MODE_PRIVATE)
+
+    fun init(c: Context) { ctx = c.applicationContext }
+
+    var botToken: String get() = p.getString("tok","")!! ; set(v) { p.edit().putString("tok",v).apply() }
+    var chatId:   String get() = p.getString("cid","")!! ; set(v) { p.edit().putString("cid",v).apply() }
+    var headsetTrigger: String get() = p.getString("ht","SINGLE")!! ; set(v) { p.edit().putString("ht",v).apply() }
+    var recordCalls:  Boolean get() = p.getBoolean("rc",true)  ; set(v) { p.edit().putBoolean("rc",v).apply() }
+    var captureViber: Boolean get() = p.getBoolean("cv",true)  ; set(v) { p.edit().putBoolean("cv",v).apply() }
+    fun save(c: Context) { ctx = c.applicationContext }
+    val ok get() = botToken.isNotBlank() && chatId.isNotBlank()
 }

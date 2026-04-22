@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:text="Токен бота" android:textStyle="bold"/>
+        <EditText android:id="@+id/etToken" android:layout_width="match_parent"
+            android:layout_height="wrap_content" android:hint="Bot token"
+            android:inputType="text" android:layout_marginBottom="16dp"/>
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:text="Chat ID" android:textStyle="bold"/>
+        <EditText android:id="@+id/etChat" android:layout_width="match_parent"
+            android:layout_height="wrap_content" android:hint="Chat ID"
+            android:inputType="text" android:layout_marginBottom="16dp"/>
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:text="Кнопка гарнитуры" android:textStyle="bold"/>
+        <Spinner android:id="@+id/spinnerTrigger" android:layout_width="match_parent"
+            android:layout_height="wrap_content" android:layout_marginBottom="16dp"/>
+        <Switch android:id="@+id/switchCalls" android:layout_width="match_parent"
+            android:layout_height="wrap_content" android:text="Записывать звонки"
+            android:layout_marginBottom="8dp"/>
+        <Switch android:id="@+id/switchViber" android:layout_width="match_parent"
+            android:layout_height="wrap_content" android:text="Захватывать Viber сообщения"
+            android:layout_marginBottom="24dp"/>
+        <Button android:id="@+id/btnSave" android:layout_width="match_parent"
+            android:layout_height="wrap_content" android:text="Сохранить"/>
+    </LinearLayout>
+</ScrollView>

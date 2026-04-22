@@ -1,15 +1,18 @@
 package com.valera.dictagent
 
 import android.Manifest
+import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
-import android.widget.Button
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class MainActivity : AppCompatActivity() {
 
@@ -19,28 +22,38 @@ class MainActivity : AppCompatActivity() {
             add(Manifest.permission.POST_NOTIFICATIONS)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S)
             add(Manifest.permission.BLUETOOTH_CONNECT)
+        add(Manifest.permission.READ_PHONE_STATE)
     }.toTypedArray()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Config.init(this)
         setContentView(R.layout.activity_main)
 
-        val status = findViewById<TextView>(R.id.tvStatus)
-        val btnToggle = findViewById<Button>(R.id.btnToggle)
+        val bottomNav = findViewById<BottomNavigationView>(R.id.bottom_nav)
+        bottomNav.setOnItemSelectedListener { item ->
+            val fragment = when (item.itemId) {
+                R.id.nav_record -> RecordFragment()
+                R.id.nav_history -> HistoryFragment()
+                R.id.nav_settings -> SettingsFragment()
+                else -> return@setOnItemSelectedListener false
+            }
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.fragment_container, fragment)
+                .commit()
+            true
+        }
 
-        btnToggle.setOnClickListener {
-            startRecorderService()
-            // Кнопка на экране тоже работает как триггер
-            val intent = Intent(this, VoiceRecorderService::class.java)
-            intent.action = "TOGGLE"
-            startService(intent)
+        if (savedInstanceState == null) {
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.fragment_container, RecordFragment())
+                .commit()
         }
 
         if (!hasPermissions()) {
             ActivityCompat.requestPermissions(this, PERMS, 1)
         } else {
             startRecorderService()
-            status.text = "Сервис запущен.\nНажми кнопку гарнитуры для записи."
         }
     }
 
