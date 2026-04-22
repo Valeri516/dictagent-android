@@ -50,8 +50,7 @@ class HistoryFragment : Fragment() {
             val dur = if (e.durationSec > 0) " · ${e.durationSec}с" else ""
             val status = when(e.status) { "SENT" -> "✓"; "ERROR" -> "✗"; else -> "…" }
             val preview = (e.text ?: "").take(80)
-            tv.text = "$icon $time$contact$dur  $status
-$preview"
+            tv.text = "$icon $time$contact$dur  $status | $preview"
             tv.setPadding(0, 12, 0, 12)
             container.addView(tv)
             val divider = View(requireContext()).apply {

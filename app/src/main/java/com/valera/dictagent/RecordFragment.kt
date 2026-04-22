@@ -35,14 +35,10 @@ class RecordFragment : Fragment() {
     private fun updateUI() {
         val recording = AppState.isRecording
         if (recording) {
-            tvStatus.text = "● Запись...
-
-Нажми кнопку гарнитуры или кнопку ниже чтобы остановить"
+            tvStatus.text = "Запись... Нажми кнопку гарнитуры чтобы остановить"
             btnToggle.text = "■ Стоп"
         } else {
-            tvStatus.text = "Готов к записи
-
-Нажми кнопку гарнитуры или кнопку ниже чтобы начать"
+            tvStatus.text = "Готов к записи. Нажми кнопку гарнитуры или кнопку ниже."
             btnToggle.text = "● Запись"
         }
     }

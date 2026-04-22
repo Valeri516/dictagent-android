@@ -9,8 +9,8 @@ import androidx.core.content.ContextCompat
 class CallStateReceiver : BroadcastReceiver() {
     override fun onReceive(ctx: Context, intent: Intent) {
         if (!Config.recordCalls) return
-        val action = intent.action ?: return
-        when (action) {
+        val intentAction = intent.action ?: return
+        when (intentAction) {
             Intent.ACTION_NEW_OUTGOING_CALL -> {
                 val number = intent.getStringExtra(Intent.EXTRA_PHONE_NUMBER) ?: ""
                 AppState.pendingCallNumber = number
@@ -26,14 +26,14 @@ class CallStateReceiver : BroadcastReceiver() {
                     }
                     TelephonyManager.EXTRA_STATE_OFFHOOK -> {
                         val svcIntent = Intent(ctx, CallRecordingService::class.java).apply {
-                            action = "START"
+                            this.action = "START"
                             putExtra("type", AppState.pendingCallType ?: "CALL_IN")
                             putExtra("contact", number)
                         }
                         ContextCompat.startForegroundService(ctx, svcIntent)
                     }
                     TelephonyManager.EXTRA_STATE_IDLE -> {
-                        ctx.startService(Intent(ctx, CallRecordingService::class.java).apply { action = "STOP" })
+                        ctx.startService(Intent(ctx, CallRecordingService::class.java).apply { this.action = "STOP" })
                         AppState.pendingCallNumber = null
                         AppState.pendingCallType = null
                     }
