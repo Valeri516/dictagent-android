@@ -12,8 +12,6 @@ import android.support.v4.media.session.PlaybackStateCompat
 import android.view.KeyEvent
 import androidx.core.app.NotificationCompat
 import androidx.media.session.MediaButtonReceiver
-import okhttp3.MediaType.Companion.toMediaType
-import okhttp3.RequestBody.Companion.asRequestBody
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
@@ -161,39 +159,11 @@ class VoiceRecorderService : Service() {
         )
         RecordingStorage.save(this, entry)
         executor.submit {
-            try {
-                val ok = sendSync(entry, file)
-                entry.status = if (ok) "SENT" else "ERROR"
-            } catch (_: Exception) { entry.status = "ERROR" }
-            RecordingStorage.update(this, entry)
-            AppState.notifyUpdate(this)
-            updateNotification(if (entry.status == "SENT") "Готов к записи ✓" else "Ошибка отправки")
+            val ok = ServerSender.sendUrgent(this, entry, file)
+            updateNotification(if (ok) "Готов к записи ✓" else "Ошибка отправки")
         }
     }
 
-    private fun sendSync(entry: RecordingEntry, file: File): Boolean {
-        if (!Config.ok) return false
-        val sdf = SimpleDateFormat("dd.MM.yyyy HH:mm", Locale.getDefault())
-        val caption = "[${sdf.format(Date(entry.timestamp))}] Запись (${entry.durationSec}с)"
-        repeat(3) { attempt ->
-            try {
-                val body = okhttp3.MultipartBody.Builder()
-                    .setType(okhttp3.MultipartBody.FORM)
-                    .addFormDataPart("chat_id", Config.chatId)
-                    .addFormDataPart("caption", caption)
-                    .addFormDataPart("audio", file.name,
-                        file.asRequestBody("audio/m4a".toMediaType()))
-                    .build()
-                val req = okhttp3.Request.Builder()
-                    .url("https://api.telegram.org/bot${Config.botToken}/sendAudio")
-                    .post(body).build()
-                okhttp3.OkHttpClient().newCall(req).execute().use { resp ->
-                    if (resp.isSuccessful) return true
-                }
-            } catch (_: Exception) { if (attempt < 2) Thread.sleep(2000) }
-        }
-        return false
-    }
 
     private fun buildNotification(text: String): Notification {
         val pi = PendingIntent.getActivity(this, 0,

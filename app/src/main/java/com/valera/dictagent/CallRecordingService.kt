@@ -93,7 +93,7 @@ class CallRecordingService : Service() {
         RecordingStorage.save(this, entry)
         AppState.notifyUpdate(this)
         executor.submit {
-            TelegramSender.send(this, entry, file)
+            ServerSender.sendUrgent(this, entry, file)
             stopSelf()
         }
     }
