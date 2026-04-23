@@ -1,33 +1,100 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="16dp">
+    android:layout_width="match_parent" android:layout_height="match_parent">
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:orientation="vertical" android:padding="16dp">
+
+        <!-- Сервер -->
         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-            android:text="Токен бота" android:textStyle="bold"/>
-        <EditText android:id="@+id/etToken" android:layout_width="match_parent"
-            android:layout_height="wrap_content" android:hint="Bot token"
-            android:inputType="text" android:layout_marginBottom="16dp"/>
+            android:text="СЕРВЕР" android:textStyle="bold" android:textSize="12sp"
+            android:textColor="#888888" android:layout_marginTop="8dp"/>
+        <EditText android:id="@+id/etServer" android:layout_width="match_parent"
+            android:layout_height="wrap_content" android:hint="URL сервера" android:inputType="textUri"/>
+        <EditText android:id="@+id/etDeviceId" android:layout_width="match_parent"
+            android:layout_height="wrap_content" android:hint="ID устройства" android:inputType="text"/>
+        <TextView android:id="@+id/tvServerStatus" android:layout_width="wrap_content"
+            android:layout_height="wrap_content" android:text="Сервер: ..."
+            android:layout_marginBottom="16dp"/>
+
+        <!-- Гарнитура -->
         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-            android:text="Chat ID" android:textStyle="bold"/>
-        <EditText android:id="@+id/etChat" android:layout_width="match_parent"
-            android:layout_height="wrap_content" android:hint="Chat ID"
-            android:inputType="text" android:layout_marginBottom="16dp"/>
-        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-            android:text="Кнопка гарнитуры" android:textStyle="bold"/>
-        <Spinner android:id="@+id/spinnerTrigger" android:layout_width="match_parent"
+            android:text="КНОПКА ГАРНИТУРЫ" android:textStyle="bold" android:textSize="12sp" android:textColor="#888888"/>
+        <Switch android:id="@+id/switchHeadset" android:layout_width="match_parent"
+            android:layout_height="wrap_content" android:text="Кнопка гарнитуры"/>
+        <Spinner android:id="@+id/spinnerHeadset" android:layout_width="match_parent"
             android:layout_height="wrap_content" android:layout_marginBottom="16dp"/>
+
+        <!-- Встряхивание -->
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:text="ВСТРЯХИВАНИЕ ТЕЛЕФОНА" android:textStyle="bold" android:textSize="12sp" android:textColor="#888888"/>
+        <Switch android:id="@+id/switchShake" android:layout_width="match_parent"
+            android:layout_height="wrap_content" android:text="Встряхивание"/>
+        <Spinner android:id="@+id/spinnerShake" android:layout_width="match_parent"
+            android:layout_height="wrap_content" android:layout_marginBottom="16dp"/>
+
+        <!-- Экран -->
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:text="ВКЛЮЧЕНИЕ ЭКРАНА" android:textStyle="bold" android:textSize="12sp" android:textColor="#888888"/>
+        <Switch android:id="@+id/switchScreen" android:layout_width="match_parent"
+            android:layout_height="wrap_content" android:text="Запись при включении экрана"
+            android:layout_marginBottom="16dp"/>
+
+        <!-- Голосовая фраза -->
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:text="ГОЛОСОВАЯ ФРАЗА" android:textStyle="bold" android:textSize="12sp" android:textColor="#888888"/>
+        <Switch android:id="@+id/switchVoice" android:layout_width="match_parent"
+            android:layout_height="wrap_content" android:text="Голосовая фраза-триггер"/>
+        <EditText android:id="@+id/etVoiceStart" android:layout_width="match_parent"
+            android:layout_height="wrap_content" android:hint="Фраза запуска (напр. начать запись)"/>
+        <EditText android:id="@+id/etVoiceStop" android:layout_width="match_parent"
+            android:layout_height="wrap_content" android:hint="Фраза стоп (напр. стоп)"/>
+        <Spinner android:id="@+id/spinnerVoiceSched" android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:orientation="horizontal" android:layout_marginBottom="16dp">
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="С " android:gravity="center_vertical"/>
+            <EditText android:id="@+id/etVoiceFrom" android:layout_width="50dp"
+                android:layout_height="wrap_content" android:inputType="number" android:text="8"/>
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text=" до " android:gravity="center_vertical"/>
+            <EditText android:id="@+id/etVoiceTo" android:layout_width="50dp"
+                android:layout_height="wrap_content" android:inputType="number" android:text="22"/>
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text=" ч." android:gravity="center_vertical"/>
+        </LinearLayout>
+
+        <!-- Захват -->
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:text="ЗАХВАТ ДАННЫХ" android:textStyle="bold" android:textSize="12sp" android:textColor="#888888"/>
         <Switch android:id="@+id/switchCalls" android:layout_width="match_parent"
-            android:layout_height="wrap_content" android:text="Записывать звонки"
-            android:layout_marginBottom="8dp"/>
+            android:layout_height="wrap_content" android:text="Записывать звонки автоматически"/>
         <Switch android:id="@+id/switchViber" android:layout_width="match_parent"
-            android:layout_height="wrap_content" android:text="Захватывать Viber сообщения"
-            android:layout_marginBottom="24dp"/>
+            android:layout_height="wrap_content" android:text="Захватывать Viber-сообщения"/>
+        <Switch android:id="@+id/switchContacts" android:layout_width="match_parent"
+            android:layout_height="wrap_content" android:text="Показывать имена из телефонной книги"
+            android:layout_marginBottom="16dp"/>
+
+        <!-- Ответ -->
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:text="ГОЛОСОВОЙ ОТВЕТ" android:textStyle="bold" android:textSize="12sp" android:textColor="#888888"/>
+        <Switch android:id="@+id/switchTts" android:layout_width="match_parent"
+            android:layout_height="wrap_content" android:text="Голосовой ответ (если наушники подключены)"/>
+        <Switch android:id="@+id/switchSilent" android:layout_width="match_parent"
+            android:layout_height="wrap_content" android:text="Не говорить если телефон на беззвучном"/>
+        <Switch android:id="@+id/switchSuppressTg" android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Не дублировать в Telegram когда наушники подключены"
+            android:layout_marginBottom="16dp"/>
+
+        <!-- ИИ модель -->
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:text="МОДЕЛЬ ИИ" android:textStyle="bold" android:textSize="12sp" android:textColor="#888888"/>
+        <Spinner android:id="@+id/spinnerModel" android:layout_width="match_parent"
+            android:layout_height="wrap_content" android:layout_marginBottom="24dp"/>
+
         <Button android:id="@+id/btnSave" android:layout_width="match_parent"
-            android:layout_height="wrap_content" android:text="Сохранить"/>
+            android:layout_height="wrap_content" android:text="Сохранить"
+            android:layout_marginBottom="32dp"/>
     </LinearLayout>
 </ScrollView>

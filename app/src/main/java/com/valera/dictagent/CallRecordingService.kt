@@ -5,6 +5,7 @@ import android.content.Intent
 import android.media.MediaRecorder
 import android.os.Build
 import android.os.IBinder
+import android.provider.ContactsContract
 import androidx.core.app.NotificationCompat
 import java.io.File
 import java.text.SimpleDateFormat
@@ -22,10 +23,7 @@ class CallRecordingService : Service() {
 
     override fun onBind(intent: Intent?): IBinder? = null
 
-    override fun onCreate() {
-        super.onCreate()
-        createChannel()
-    }
+    override fun onCreate() { super.onCreate(); createChannel() }
 
     private fun createChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -38,13 +36,24 @@ class CallRecordingService : Service() {
         when (intent?.action) {
             "START" -> {
                 callType = intent.getStringExtra("type") ?: "CALL_IN"
-                contact = intent.getStringExtra("contact") ?: ""
-                startForeground(3, buildNotification("Запись звонка..."))
+                val number = intent.getStringExtra("contact") ?: ""
+                contact = if (Config.useContactNames) resolveContactName(number) else number
+                startForeground(3, buildNotification("Запись звонка: $contact"))
                 startRecording()
             }
             "STOP" -> stopRecordingAndSend()
         }
         return START_NOT_STICKY
+    }
+
+    private fun resolveContactName(number: String): String {
+        if (number.isBlank()) return ""
+        return try {
+            val uri = android.net.Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, android.net.Uri.encode(number))
+            contentResolver.query(uri, arrayOf(ContactsContract.PhoneLookup.DISPLAY_NAME), null, null, null)?.use { c ->
+                if (c.moveToFirst()) c.getString(0) else number
+            } ?: number
+        } catch (_: Exception) { number }
     }
 
     private fun startRecording() {
@@ -60,26 +69,23 @@ class CallRecordingService : Service() {
                 setAudioSamplingRate(16000)
                 setAudioEncodingBitRate(64000)
                 setOutputFile(currentFile!!.absolutePath)
-                prepare()
-                start()
+                prepare(); start()
             }
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             try {
                 recorder = newRecorder().apply {
                     setAudioSource(MediaRecorder.AudioSource.MIC)
                     setOutputFormat(MediaRecorder.OutputFormat.MPEG_4)
                     setAudioEncoder(MediaRecorder.AudioEncoder.AAC)
                     setOutputFile(currentFile!!.absolutePath)
-                    prepare()
-                    start()
+                    prepare(); start()
                 }
-            } catch (e2: Exception) { stopSelf() }
+            } catch (_: Exception) { stopSelf() }
         }
     }
 
-    private fun newRecorder(): MediaRecorder =
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) MediaRecorder(this)
-        else @Suppress("DEPRECATION") MediaRecorder()
+    private fun newRecorder() = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S)
+        MediaRecorder(this) else @Suppress("DEPRECATION") MediaRecorder()
 
     private fun stopRecordingAndSend() {
         try { recorder?.stop(); recorder?.release() } catch (_: Exception) {}
@@ -98,15 +104,10 @@ class CallRecordingService : Service() {
         }
     }
 
-    override fun onDestroy() {
-        executor.shutdown()
-        super.onDestroy()
-    }
+    override fun onDestroy() { executor.shutdown(); super.onDestroy() }
 
     private fun buildNotification(text: String): Notification =
         NotificationCompat.Builder(this, CH)
-            .setContentTitle("DictAgent")
-            .setContentText(text)
-            .setSmallIcon(android.R.drawable.ic_btn_speak_now)
-            .build()
+            .setContentTitle("DictAgent").setContentText(text)
+            .setSmallIcon(android.R.drawable.ic_btn_speak_now).build()
 }
